@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   
   const getPsUser = async () => {
     const res = await makeUniversalSearch(
-      getPsAuth(),
+      await getPsAuth(),
       username,
       "SocialAllAccounts"
     )
