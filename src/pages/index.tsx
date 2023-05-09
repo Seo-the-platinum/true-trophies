@@ -17,7 +17,7 @@ const Home: NextPage = ({ authorization }) => {
       "SocialAllAccounts"
     )
   }
-  console.log(getPsUser())
+
   return (
     <>
       <Head>
