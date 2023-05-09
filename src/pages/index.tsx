@@ -2,22 +2,13 @@ import { type NextPage } from "next";
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { getPsAuth } from "~/utils/psAuth";
 import { api } from "~/utils/api";
-import type { GetServerSideProps } from "next";
-import { exchangeNpssoForCode, exchangeCodeForAccessToken, makeUniversalSearch } from "psn-api";
 
-const Home: NextPage = ({ authorization }) => {
-  const [ username, setUsername ] = useState("");
-  
-  const getPsUser = async () => {
-    const res = await makeUniversalSearch(
-      authorization,
-      username,
-      "SocialAllAccounts"
-    )
-  }
 
+const Home: NextPage = () => {
+  const [ username, setUsername ] = useState("iamthewombraider");
+  const { data: user } = api.user.getUser.useQuery({text: username});
+  console.log(user)
   return (
     <>
       <Head>
@@ -31,16 +22,6 @@ const Home: NextPage = ({ authorization }) => {
     </>
   );
 };
-
-export const getServerSideProps: GetServerSideProps = async ()=> {
-  const accessCode = await exchangeNpssoForCode(process.env.NPSSO)
-  const authorization = await exchangeCodeForAccessToken(accessCode);
-  return {
-    props: {
-      authorization
-    }
-  }
-}
 
 export default Home;
 
