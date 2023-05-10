@@ -4,7 +4,7 @@ import { exchangeNpssoForCode, exchangeCodeForAccessToken, makeUniversalSearch }
 
 export const userRouter = createTRPCRouter({
     getUser:publicProcedure.input(z.object({text: z.string()})).query(async ({ input })=> {
-        const accessCode = await exchangeNpssoForCode(process.env.NPSSO)
+        const accessCode = await exchangeNpssoForCode(process.env.NPSSO as string)
         const authorization = await exchangeCodeForAccessToken(accessCode);
         const res = await makeUniversalSearch(
             authorization,
