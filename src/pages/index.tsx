@@ -1,14 +1,25 @@
 import { type NextPage } from "next";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import type { SyntheticEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { api } from "~/utils/api";
 
 
 const Home: NextPage = () => {
-  const [ username, setUsername ] = useState("iamthewombraider");
-  const { data: user } = api.user.getUser.useQuery({text: username});
-  console.log(user)
+  const [ username, setUsername ] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { data: user } = api.user.getUser.useQuery({text: username}, {enabled: !!username} );
+
+  const handleUsername = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const value = inputRef.current?.value;
+    if (value) {
+      setUsername(value);
+    }
+  }
+  console.log(user?.trophyTitles)
   return (
     <>
       <Head>
@@ -17,6 +28,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+        <form onSubmit={handleUsername}>
+          <input defaultValue={username} ref={inputRef} type='text'/>
+          <button className='rounded-sm bg-slate-100' type='submit'>Search</button>
+        </form>
+        { user?.userData &&  <Image src={user.userData.avatarUrl} alt='profile thumbnail' width={68} height={68}/>}
         
       </main>
     </>
