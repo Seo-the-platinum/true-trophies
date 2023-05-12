@@ -14,6 +14,18 @@ const config = {
         hostname: "static-resource.np.community.playstation.net",
         port:'',
         pathname: "/avatar/**",
+      },
+      {
+        protocol: "https",
+        hostname: "psnobj.prod.dl.playstation.net",
+        port:'',
+        pathname: "/psnobj/**",
+      },
+      {
+        protocol: "https",
+        hostname: "image.api.playstation.com",
+        port:'',
+        pathname: "/trophy/np/**",
       }
     ]
   },
@@ -29,3 +41,6 @@ const config = {
   },
 };
 export default config;
+
+
+// https://psnobj.prod.dl.playstation.net/psnobj/NPWR22726_00/1dd4ce99-981b-4d92-92b7-55fdddc5681e.png

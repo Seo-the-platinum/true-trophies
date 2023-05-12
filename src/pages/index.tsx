@@ -2,10 +2,8 @@ import { type NextPage } from "next";
 import { useState, useRef } from "react";
 import type { SyntheticEvent } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import Image from "next/image";
 import { api } from "~/utils/api";
-
+import User from '../components/User'
 
 const Home: NextPage = () => {
   const [ username, setUsername ] = useState("");
@@ -19,7 +17,7 @@ const Home: NextPage = () => {
       setUsername(value);
     }
   }
-  console.log(user?.trophyTitles)
+
   return (
     <>
       <Head>
@@ -32,8 +30,8 @@ const Home: NextPage = () => {
           <input defaultValue={username} ref={inputRef} type='text'/>
           <button className='rounded-sm bg-slate-100' type='submit'>Search</button>
         </form>
-        { user?.userData &&  <Image src={user.userData.avatarUrl} alt='profile thumbnail' width={68} height={68}/>}
-        
+        { user &&  <User user={user}/>}
+
       </main>
     </>
   );
