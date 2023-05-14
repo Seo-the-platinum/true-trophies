@@ -16,7 +16,7 @@ const Game = ({ game, accountId }: GameProps) => {
         height={68} 
         src={game.trophyTitleIconUrl}
         width={68}/>
-      <p className='text-slate-100 text-xl'>{`+${game.earnedTrophies.platinum}`}</p>
+      <p className='text-white text-xl'>{`+${game.earnedTrophies.platinum}`}</p>
     </div>
   )
 }

@@ -18,7 +18,10 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 import { prisma } from "~/server/db";
 
-type CreateContextOptions = Record<string, never>;
+import { 
+  exchangeNpssoForCode,
+  exchangeCodeForAccessToken, 
+  exchangeRefreshTokenForAuthTokens} from "psn-api";
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -30,11 +33,6 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {
-    prisma,
-  };
-};
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -42,8 +40,29 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+
+//The createTRPCContext function is used to create a context for each request,
+//by default in the t3 it comes with prisma. We added an authorization prop and logic to retrieve the access token
+//from the psn api and refresh it if it is expired. This will allow all the procedures to use the psn api.
+export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
+  const authorization = async () => {
+    const accessCode = await exchangeNpssoForCode(process.env.NPSSO as string)
+    const authorization = await exchangeCodeForAccessToken(accessCode);
+    const now = new Date()
+    const expirationDate = new Date(
+      now.getTime() + authorization.expiresIn * 1000
+    ).toISOString()
+    const isAccessTokenExpired = new Date(expirationDate).getTime() < now.getTime()
+    if (isAccessTokenExpired) {
+      const updatedAuthorization = await exchangeRefreshTokenForAuthTokens(authorization.refreshToken)
+      return updatedAuthorization
+    }
+    return authorization
+  }
+  return {
+    prisma,
+    authorization: await authorization()
+  };
 };
 
 /**

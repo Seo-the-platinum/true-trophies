@@ -1,22 +1,23 @@
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { authorization } from "../../../utils/authorization";
+
 import { 
     getUserTitles,
     makeUniversalSearch, } from "psn-api";
 
 export const userRouter = createTRPCRouter({
-    getUser:publicProcedure.input(z.object({text: z.string()})).query(async ({ input })=> {
-        const auth = await authorization()
+    getUser:publicProcedure.input(
+        z.object({text: z.string()}))
+        .query(async ({ ctx, input })=> {
         const userRes = await makeUniversalSearch(
-            auth,
+            ctx.authorization,
             input.text,
             "SocialAllAccounts"
         )
         const userData = userRes?.domainResponses[0]?.results[0]?.socialMetadata
         const targetAccountId = userRes?.domainResponses[0]?.results[0]?.socialMetadata.accountId;
         if (targetAccountId) {
-            const { trophyTitles: games } = await getUserTitles(auth, targetAccountId)
+            const { trophyTitles: games } = await getUserTitles(ctx.authorization, targetAccountId)
             return { ...userData, games }
         }
     }),

@@ -8,7 +8,7 @@ import User from '../components/User'
 const Home: NextPage = () => {
   const [ username, setUsername ] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: user } = api.user.getUser.useQuery({text: username}, {enabled: !!username} );
+  const { data: user } = api.user.getUser.useQuery({text: username}, {enabled: !!username});
 
   const handleUsername = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +31,6 @@ const Home: NextPage = () => {
           <button className='rounded-sm bg-slate-100' type='submit'>Search</button>
         </form>
         { user &&  <User user={user}/>}
-
       </main>
     </>
   );
